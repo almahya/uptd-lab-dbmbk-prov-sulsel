@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPTD Laboratorium Pengujian Bahan Konstruksi Sulsel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX in Browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-white">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+
+        // Custom Icon Component using Lucide
+        const Icon = ({ name, size = 24, className = "" }) => {
+            useEffect(() => {
+                lucide.createIcons();
+            }, [name]);
+            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        };
+
+        const App = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [activeTab, setActiveTab] = useState('all');
+
+            useEffect(() => {
+                lucide.createIcons();
+            }, []);
+
+            const galleryItems = [
+                { id: 1, src: '1000425883.jpg', title: 'Pengujian Material 1', category: 'Laboratorium' },
+                { id: 2, src: '1000425882.jpg', title: 'Pengujian Lapangan 2', category: 'Lapangan' },
+                { id: 3, src: '1000425879.jpg', title: 'Analisa Agregat', category: 'Laboratorium' },
+                { id: 4, src: '1000425880.jpg', title: 'Dokumentasi Sampel', category: 'Laboratorium' },
+                { id: 5, src: '1000425881.jpg', title: 'Uji Beton Keras', category: 'Laboratorium' },
+                { id: 6, src: 'hero.png', title: 'Fasilitas Laboratorium', category: 'Fasilitas' },
+            ];
+
+            const retribusiData = [
+                { id: 1, cat: 'tanah', name: 'Pemboran tangan per meter', unit: 'per meter', price: 150000 },
+                { id: 2, cat: 'tanah', name: 'Pengambilan contoh tanah asli', unit: 'per sampel', price: 65000 },
+                { id: 3, cat: 'tanah', name: 'SPT', unit: 'per sampel', price: 65000 },
+                { id: 4, cat: 'tanah', name: 'Pemboran mesin (tanah/meter)', unit: 'per meter', price: 125000 },
+                { id: 8, cat: 'tanah', name: 'Sondir ringan ≤150 kg/cm² (20 m)', unit: 'per meter', price: 250000 },
+                { id: 9, cat: 'tanah', name: 'Sondir berat ≤400 kg/cm² (30 m)', unit: 'per meter', price: 300000 },
+                { id: 18, cat: 'beton_agregat', name: 'Abrasi', unit: 'per sampel', price: 65000 },
+                { id: 19, cat: 'beton_agregat', name: 'Gradasi', unit: 'per sampel', price: 40000 },
+                { id: 20, cat: 'beton_agregat', name: 'Berat jenis', unit: 'per sampel', price: 65000 },
+                { id: 21, cat: 'beton_agregat', name: 'Berat isi', unit: 'per sampel', price: 65000 },
+                { id: 31, cat: 'beton_keras', name: 'Kuat tekan/buah', unit: 'per sampel', price: 65000 },
+                { id: 34, cat: 'beton_keras', name: 'Kuat tekan dengan hammer test/titik', unit: 'per sampel', price: 150000 },
+                { id: 41, cat: 'beton_keras', name: 'Pundit (UPV)', unit: 'per titik', price: 250000 },
+                { id: 60, cat: 'perkerasan', name: 'Core drill', unit: 'per titik', price: 300000 },
+                { id: 61, cat: 'perkerasan', name: 'Sandcone/cutter', unit: 'per titik', price: 300000 },
+                { id: 62, cat: 'perkerasan', name: 'Marshall test', unit: 'per titik', price: 550000 },
+                { id: 63, cat: 'perkerasan', name: 'CBR Lapangan', unit: 'per titik', price: 75000 }
+            ];
+
+            const categories = [
+                { id: 'all', name: 'Semua Layanan' },
+                { id: 'tanah', name: 'Penyelidikan Tanah' },
+                { id: 'beton_agregat', name: 'Agregat Beton' },
+                { id: 'beton_keras', name: 'Beton Keras' },
+                { id: 'perkerasan', name: 'Lapisan Perkerasan' }
+            ];
+
+            const filteredData = useMemo(() => {
+                return retribusiData.filter(item => {
+                    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+                    const matchesTab = activeTab === 'all' || item.cat === activeTab;
+                    return matchesSearch && matchesTab;
+                });
+            }, [searchQuery, activeTab]);
+
+            return (
+                <div className="min-h-screen">
+                    {/* Navbar */}
+                    <nav className="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-slate-100">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between h-20 items-center">
+                                <div className="flex items-center space-x-3">
+                                    <div className="bg-yellow-400 p-2 rounded-xl shadow-lg border border-yellow-500/20 text-slate-900">
+                                        <Icon name="hard-hat" size={26} />
+                                    </div>
+                                    <div className="hidden sm:block">
+                                        <h1 className="text-[14px] font-black leading-tight uppercase tracking-tight">UPTD Laboratorium Pengujian Bahan Konstruksi</h1>
+                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">Dinas Bina Marga dan Bina Konstruksi Provinsi Sulsel</p>
+                                    </div>
+                                </div>
+                                <div className="hidden md:flex items-center space-x-8 font-black">
+                                    <a href="#beranda" className="text-slate-600 hover:text-yellow-600 transition text-xs uppercase tracking-widest">Beranda</a>
+                                    <a href="#layanan" className="text-slate-600 hover:text-yellow-600 transition text-xs uppercase tracking-widest">Layanan</a>
+                                    <a href="#tarif" className="text-slate-600 hover:text-yellow-600 transition text-xs uppercase tracking-widest">Tarif</a>
+                                    <a href="#galeri" className="text-slate-600 hover:text-yellow-600 transition text-xs uppercase tracking-widest">Galeri</a>
+                                    <a href="https://wa.me/6282192777789" target="_blank" className="bg-yellow-400 text-slate-900 px-6 py-2.5 rounded-full hover:bg-yellow-500 transition shadow-lg text-xs border border-yellow-500/20 uppercase tracking-widest">Hubungi Petugas</a>
+                                </div>
+                                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
+                                    <Icon name={isMenuOpen ? "x" : "menu"} size={28} />
+                                </button>
+                            </div>
+                        </div>
+                        {isMenuOpen && (
+                            <div className="md:hidden bg-white border-t p-6 space-y-4 shadow-xl">
+                                <a href="#beranda" onClick={() => setIsMenuOpen(false)} className="block font-bold uppercase text-xs tracking-widest">Beranda</a>
+                                <a href="#layanan" onClick={() => setIsMenuOpen(false)} className="block font-bold uppercase text-xs tracking-widest">Layanan</a>
+                                <a href="#tarif" onClick={() => setIsMenuOpen(false)} className="block font-bold uppercase text-xs tracking-widest">Tarif</a>
+                                <a href="https://wa.me/6282192777789" className="block py-4 bg-yellow-400 text-center rounded-2xl font-black uppercase text-xs tracking-widest">Hubungi Kami</a>
+                            </div>
+                        )}
+                    </nav>
+
+                    {/* Hero */}
+                    <section id="beranda" className="pt-16 pb-24 md:pt-24 md:pb-32 bg-slate-50">
+                        <div className="max-w-7xl mx-auto px-4">
+                            <div className="grid lg:grid-cols-2 gap-16 items-center">
+                                <div className="space-y-8">
+                                    <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-yellow-100 border border-yellow-200 rounded-full text-yellow-800 text-[10px] font-black uppercase tracking-widest">
+                                        <Icon name="shield-check" size={14} className="text-yellow-600" />
+                                        <span>Terakreditasi & Tersertifikasi ISO 9001:2015</span>
+                                    </div>
+                                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.1] uppercase tracking-tighter">
+                                        Menjamin Mutu <span className="text-yellow-500">Konstruksi</span> yang Handal
+                                    </h2>
+                                    <p className="text-lg text-slate-600 max-w-xl leading-relaxed font-medium">
+                                        Unit pelaksana teknis yang melayani pengujian material konstruksi jalan, jembatan, dan bangunan secara profesional untuk infrastruktur Sulawesi Selatan yang handal.
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                                        <a href="#tarif" className="px-10 py-4 bg-yellow-400 text-slate-900 font-black rounded-2xl hover:bg-yellow-500 transition-all shadow-xl text-center uppercase tracking-wider text-xs">Lihat Tarif 2026</a>
+                                        <a href="#galeri" className="px-10 py-4 bg-white border-2 border-slate-200 font-black rounded-2xl hover:bg-slate-50 transition-all text-center flex items-center justify-center space-x-2 uppercase tracking-wider text-xs"><span>Galeri Foto</span><Icon name="chevron-right" size={18} /></a>
+                                    </div>
+                                </div>
+                                <div className="relative group">
+                                    <div className="absolute -inset-4 bg-yellow-400/20 rounded-[2.5rem] rotate-2"></div>
+                                    <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white aspect-[4/3] bg-slate-200">
+                                        <img src="hero.png" alt="Hero" className="w-full h-full object-cover" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Layanan */}
+                    <section id="layanan" className="py-24 bg-white">
+                        <div className="max-w-7xl mx-auto px-4">
+                            <div className="mb-16">
+                                <h3 className="text-yellow-600 font-black text-xs uppercase tracking-[0.2em] mb-3 font-bold tracking-widest">Bidang Keahlian</h3>
+                                <h2 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-widest">Pengujian Konstruksi</h2>
+                                <div className="w-20 h-1.5 bg-yellow-400 mt-4 rounded-full"></div>
+                            </div>
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {[
+                                    { title: "Tanah", icon: "map-pin", items: ["Pemboran", "Sondir", "SPT", "Uji Sumur"], color: "bg-yellow-50 border-yellow-200" },
+                                    { title: "Agregat", icon: "settings", items: ["Abrasi", "Gradasi", "Berat Jenis", "Berat Isi"], color: "bg-amber-50 border-amber-200" },
+                                    { title: "Beton Keras", icon: "hard-hat", items: ["Kuat Tekan", "Core Drill", "Hammer Test", "Pundit"], color: "bg-yellow-100 border-yellow-300" },
+                                    { title: "Perkerasan", icon: "layers", items: ["Sandcone", "Marshall", "CBR", "Core Drill"], color: "bg-orange-50 border-orange-200" }
+                                ].map((box, i) => (
+                                    <div key={i} className={`p-8 rounded-[2.5rem] border ${box.color} hover:shadow-xl transition text-left`}>
+                                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm text-slate-900"><Icon name={box.icon} /></div>
+                                        <h4 className="font-black text-lg mb-6 uppercase tracking-widest text-slate-900">{box.title}</h4>
+                                        <ul className="space-y-3 font-bold text-slate-800 text-xs uppercase tracking-wide">
+                                            {box.items.map((item, j) => (
+                                                <li key={j} className="flex items-center space-x-2"><div className="w-1.5 h-1.5 rounded-full bg-current shrink-0"></div><span>{item}</span></li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Galeri */}
+                    <section id="galeri" className="py-24 bg-slate-50">
+                        <div className="max-w-7xl mx-auto px-4">
+                            <div className="mb-16">
+                                <h3 className="text-yellow-600 font-black text-xs uppercase tracking-[0.2em] mb-3 font-bold tracking-widest">Dokumentasi Kerja</h3>
+                                <h2 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-widest">Galeri Pengujian</h2>
+                                <div className="w-20 h-1.5 bg-yellow-400 mt-4 rounded-full"></div>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {galleryItems.map((item) => (
+                                    <div key={item.id} className="group relative bg-white rounded-[2rem] overflow-hidden shadow-lg">
+                                        <div className="aspect-[4/3] overflow-hidden">
+                                            <img src={item.src} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                                        </div>
+                                        <div className="p-6">
+                                            <span className="text-yellow-600 font-black text-[10px] uppercase tracking-widest mb-1 block">{item.category}</span>
+                                            <h4 className="text-slate-900 font-black text-sm uppercase tracking-tight">{item.title}</h4>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Tarif */}
+                    <section id="tarif" className="py-24 bg-white">
+                        <div className="max-w-7xl mx-auto px-4">
+                            <div className="flex flex-col lg:flex-row justify-between items-end gap-8 mb-12">
+                                <div>
+                                    <h3 className="text-yellow-600 font-black text-xs uppercase tracking-[0.2em] mb-3 font-bold tracking-widest">Tarif Jasa Layanan</h3>
+                                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-widest">Daftar Biaya 2026</h2>
+                                    <p className="mt-4 text-slate-500 font-medium">Sesuai Perda Prov. Sulsel No. 1 Tahun 2026.</p>
+                                </div>
+                                <div className="w-full lg:w-96 relative">
+                                    <Icon name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Cari pengujian..." 
+                                        className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-400 font-bold"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="bg-white rounded-[2.5rem] overflow-hidden border border-slate-200 shadow-xl">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-slate-900 text-white uppercase text-[10px] font-black tracking-widest">
+                                            <tr>
+                                                <th className="px-8 py-6">Jenis Pengujian</th>
+                                                <th className="px-8 py-6">Satuan</th>
+                                                <th className="px-8 py-6 text-right">Tarif (Rp)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100 font-bold text-sm text-slate-900 uppercase">
+                                            {filteredData.map((item) => (
+                                                <tr key={item.id} className="hover:bg-yellow-50 transition">
+                                                    <td className="px-8 py-5">{item.name}</td>
+                                                    <td className="px-8 py-5 text-slate-400 italic lowercase">{item.unit}</td>
+                                                    <td className="px-8 py-5 text-right text-yellow-700 font-black">{item.price.toLocaleString('id-ID')}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="bg-slate-900 py-20 text-white text-left">
+                        <div className="max-w-7xl mx-auto px-4">
+                            <div className="flex flex-col md:flex-row justify-between gap-12">
+                                <div className="space-y-8">
+                                    <div className="flex items-center space-x-5">
+                                        <div className="p-2 bg-white rounded-2xl"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/Coat_of_arms_of_South_Sulawesi.svg" className="h-10 w-auto" /></div>
+                                        <div>
+                                            <h5 className="font-black text-[13px] uppercase text-yellow-400 tracking-widest">PEMERINTAH PROVINSI SULSEL</h5>
+                                            <p className="text-[10px] text-slate-500 font-black tracking-widest">DINAS BINA MARGA & BK</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-left bg-slate-800 p-8 rounded-[2.5rem] border border-slate-700">
+                                        <h6 className="text-yellow-400 font-black uppercase text-xs tracking-widest mb-6">Pusat Bantuan</h6>
+                                        <div className="space-y-4 text-xs font-bold uppercase tracking-tight">
+                                            <a href="https://wa.me/6282192777789" target="_blank" className="flex items-center space-x-3 hover:text-yellow-400">
+                                                <Icon name="phone" size={16} className="text-yellow-500" />
+                                                <span>Syahrir: 0821-9277-7789</span>
+                                            </a>
+                                            <div className="flex items-center space-x-3 text-slate-400">
+                                                <Icon name="map-pin" size={16} />
+                                                <span>Baddoka, Makassar, Sulawesi Selatan</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-20 pt-10 border-t border-slate-800 text-[9px] font-black text-slate-600 uppercase tracking-[0.4em]">
+                                <p>&copy; 2026 DINAS BINA MARGA DAN BINA KONSTRUKSI PROVINSI SULSEL.</p>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
